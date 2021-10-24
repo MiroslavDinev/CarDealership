@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace CarDealership.Models.Cars
+﻿namespace CarDealership.Models.Cars
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     public class AllCarsQueryModel
     {
         public const int CarsPerPage = 3;

@@ -1,7 +1,6 @@
-using System;
-
 namespace CarDealership.Models
 {
+    using System;
     public class ErrorViewModel
     {
         public string RequestId { get; set; }

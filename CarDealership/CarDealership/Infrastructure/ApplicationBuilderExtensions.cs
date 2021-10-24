@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using CarDealership.Data;
-using CarDealership.Data.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace CarDealership.Infrastructure
+﻿namespace CarDealership.Infrastructure
 {
+    using System.Linq;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+
+    using CarDealership.Data;
+    using CarDealership.Data.Models;
     public static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder PrepareDatabase

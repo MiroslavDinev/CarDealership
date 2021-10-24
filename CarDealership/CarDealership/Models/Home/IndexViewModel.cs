@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace CarDealership.Models.Home
+﻿namespace CarDealership.Models.Home
 {
+    using System.Collections.Generic;
     public class IndexViewModel
     {
         public int TotalCars { get; set; }

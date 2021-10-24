@@ -1,9 +1,11 @@
-﻿using CarDealership.Data.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-
-namespace CarDealership.Data
+﻿namespace CarDealership.Data
 {
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+    using CarDealership.Data.Models;
+
     public class CarDealershipDbContext : IdentityDbContext
     {
         public CarDealershipDbContext(DbContextOptions<CarDealershipDbContext> options)
@@ -13,6 +15,7 @@ namespace CarDealership.Data
 
         public DbSet<Car> Cars { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Dealer> Dealers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -20,6 +23,18 @@ namespace CarDealership.Data
                 .HasOne(c => c.Category)
                 .WithMany(ct => ct.Cars)
                 .HasForeignKey(c => c.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Car>()
+                .HasOne(c => c.Dealer)
+                .WithMany(d => d.Cars)
+                .HasForeignKey(c => c.DealerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Dealer>()
+                .HasOne<IdentityUser>()
+                .WithOne()
+                .HasForeignKey<Dealer>(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);

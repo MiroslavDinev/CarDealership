@@ -1,17 +1,13 @@
-﻿using CarDealership.Data;
-using CarDealership.Models;
-using CarDealership.Models.Cars;
-using CarDealership.Models.Home;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CarDealership.Controllers
+﻿namespace CarDealership.Controllers
 {
+    using System.Linq;
+    using System.Diagnostics;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    using CarDealership.Data;
+    using CarDealership.Models;
+    using CarDealership.Models.Home;
     public class HomeController : Controller
     {
         private readonly CarDealershipDbContext data;
@@ -24,6 +20,7 @@ namespace CarDealership.Controllers
         public IActionResult Index()
         {
             var totalCars = this.data.Cars.Count();
+            var totalUsers = this.data.Users.Count();
 
             var cars = this.data.Cars
                 .OrderByDescending(x=> x.Id)
@@ -41,7 +38,8 @@ namespace CarDealership.Controllers
             return this.View(new IndexViewModel 
             {
                 Cars = cars,
-                TotalCars = totalCars
+                TotalCars = totalCars,
+                TotalUsers = totalUsers
             });
         }
 

@@ -1,14 +1,16 @@
-﻿using CarDealership.Data;
-using CarDealership.Data.Models;
-using CarDealership.Models.Cars;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CarDealership.Controllers
+﻿namespace CarDealership.Controllers
 {
+    using System.Linq;
+    using System.Collections.Generic;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authorization;
+
+    using CarDealership.Data;
+    using CarDealership.Data.Models;
+    using CarDealership.Models.Cars;
+    using CarDealership.Infrastructure;
+
     public class CarsController : Controller
     {
         private readonly CarDealershipDbContext data;
@@ -17,8 +19,15 @@ namespace CarDealership.Controllers
         {
             this.data = data;
         }
+
+        [Authorize]
         public IActionResult Add()
         {
+            if (!this.IsUserDealer())
+            {
+                return RedirectToAction(nameof(DealersController.Create), "Dealers");
+            }
+
             return this.View(new CarAddFormModel
             {
                 Categories = this.GetCarCategories()
@@ -26,9 +35,20 @@ namespace CarDealership.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(CarAddFormModel car)
         {
-            if(!this.data.Categories.Any(x=> x.Id==car.CategoryId))
+            var dealerId = this.data.Dealers
+                .Where(x => x.UserId == this.User.GetId())
+                .Select(d => d.Id)
+                .FirstOrDefault();
+
+            if (dealerId == 0)
+            {
+                return RedirectToAction(nameof(DealersController.Create), "Dealers");
+            }
+
+            if (!this.data.Categories.Any(x=> x.Id==car.CategoryId))
             {
                 this.ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist!");
             }
@@ -47,7 +67,8 @@ namespace CarDealership.Controllers
                 Description = car.Description,
                 ImageUrl = car.ImageUrl,
                 Year = car.Year,
-                CategoryId = car.CategoryId
+                CategoryId = car.CategoryId,
+                DealerId = dealerId
             };
 
             this.data.Cars.Add(carData);
@@ -116,6 +137,13 @@ namespace CarDealership.Controllers
                     Id = c.Id,
                     Name = c.Name
                 }).ToList();
+        }
+
+        private bool IsUserDealer()
+        {
+            return this.data.Dealers
+                .Any(x => x.UserId == this.User.GetId());
+
         }
     }
 }

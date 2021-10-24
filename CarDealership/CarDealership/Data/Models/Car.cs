@@ -1,17 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CarDealership.Data.Models
+﻿namespace CarDealership.Data.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
+    using static DataConstants.Car;
     public class Car
     {
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(DataConstants.CarBrandMaxLength)]
+        [MaxLength(CarBrandMaxLength)]
         public string Brand { get; set; }
 
         [Required]
-        [MaxLength(DataConstants.CarModelMaxLength)]
+        [MaxLength(CarModelMaxLength)]
         public string Model { get; set; }
 
         [Required]
@@ -24,5 +25,9 @@ namespace CarDealership.Data.Models
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }
+
+        public int DealerId { get; set; }
+
+        public Dealer Dealer { get; set; }
     }
 }

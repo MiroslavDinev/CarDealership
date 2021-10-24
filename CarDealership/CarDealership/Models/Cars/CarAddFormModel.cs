@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using CarDealership.Data;
-
-namespace CarDealership.Models.Cars
+﻿namespace CarDealership.Models.Cars
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    using static Data.DataConstants.Car;
     public class CarAddFormModel
     {
         [Required]
-        [StringLength(DataConstants.CarBrandMaxLength, MinimumLength = DataConstants.CarBrandmMinLength)]
+        [StringLength(CarBrandMaxLength, MinimumLength = CarBrandmMinLength)]
         public string Brand { get; set; }
 
         [Required]
-        [StringLength(DataConstants.CarModelMaxLength, MinimumLength = DataConstants.CarModelMinLength)]
+        [StringLength(CarModelMaxLength, MinimumLength =CarModelMinLength)]
         public string Model { get; set; }
 
         [Required]
-        [MinLength(DataConstants.CarDescriptionMinLength)]
+        [MinLength(CarDescriptionMinLength)]
         public string Description { get; set; }
 
         [Required]
@@ -24,7 +24,7 @@ namespace CarDealership.Models.Cars
         [Display(Name = "Image URL")]
         public string ImageUrl { get; set; }
 
-        [Range(DataConstants.CarYearMinValue, DataConstants.CarYearMaxValue)]
+        [Range(CarYearMinValue, CarYearMaxValue)]
         public int Year { get; set; }
 
         [Display(Name = "Category")]
