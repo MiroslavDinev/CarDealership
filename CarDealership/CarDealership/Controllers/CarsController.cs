@@ -10,14 +10,17 @@
     using CarDealership.Data.Models;
     using CarDealership.Models.Cars;
     using CarDealership.Infrastructure;
+    using CarDealership.Services.Cars;
 
     public class CarsController : Controller
     {
         private readonly CarDealershipDbContext data;
+        private readonly ICarService carService;
 
-        public CarsController(CarDealershipDbContext data)
+        public CarsController(CarDealershipDbContext data, ICarService carService)
         {
             this.data = data;
+            this.carService = carService;
         }
 
         [Authorize]
@@ -80,51 +83,13 @@
 
         public IActionResult All([FromQuery]AllCarsQueryModel query)
         {
-            var carsQuery = this.data.Cars.AsQueryable();
+            var queryResult = this.carService.All(query.Brand, query.SearchTerm, query.Sorting, query.CurrentPage, AllCarsQueryModel.CarsPerPage);
 
-            if (!string.IsNullOrWhiteSpace(query.Brand))
-            {
-                carsQuery = carsQuery.Where(x => x.Brand == query.Brand);
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-            {
-                carsQuery = carsQuery.Where(c => (c.Brand + " " + c.Model).ToLower().Contains(query.SearchTerm.ToLower())
-                || c.Description.ToLower().Contains(query.SearchTerm.ToLower()));
-            }
-
-            carsQuery = query.Sorting switch
-            {
-                CarSorting.DateCreated => carsQuery.OrderByDescending(x => x.Id),
-                CarSorting.Year => carsQuery.OrderByDescending(x => x.Year),
-                CarSorting.BrandAndModel => carsQuery.OrderBy(x => x.Brand).ThenBy(x => x.Model),
-                _=> carsQuery.OrderByDescending(x => x.Id)
-            };
-
-            var totalCars = carsQuery.Count();
-
-            var allCars = carsQuery
-                .Skip((query.CurrentPage-1) * AllCarsQueryModel.CarsPerPage)
-                .Take(AllCarsQueryModel.CarsPerPage)
-                .Select(x => new CarListingViewModel
-                {
-                    Id = x.Id,
-                    Brand = x.Brand,
-                    Model = x.Model,
-                    Description = x.Description,
-                    ImageUrl = x.ImageUrl,
-                    Year = x.Year,
-                    Category = x.Category.Name
-                }).ToList();
-
-            var carBrands = this.data.Cars
-                .Select(x => x.Brand)
-                .Distinct()
-                .ToList();
+            var carBrands = this.carService.AllCarBrands();
 
             query.Brands = carBrands;
-            query.Cars = allCars;
-            query.TotalCars = totalCars;
+            query.Cars = queryResult.Cars;
+            query.TotalCars = queryResult.TotalCars;
 
             return this.View(query);
         }

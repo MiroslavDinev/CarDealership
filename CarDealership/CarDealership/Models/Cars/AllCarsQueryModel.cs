@@ -1,5 +1,6 @@
 ﻿namespace CarDealership.Models.Cars
 {
+    using CarDealership.Services.Cars;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     public class AllCarsQueryModel
@@ -15,6 +16,6 @@
         [Display(Name = "Search")]
         public string SearchTerm { get; set; }
         public CarSorting Sorting { get; set; }
-        public IEnumerable<CarListingViewModel> Cars { get; set; }
+        public IEnumerable<CarServiceModel> Cars { get; set; }
     }
 }

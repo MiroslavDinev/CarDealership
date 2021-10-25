@@ -10,6 +10,9 @@ namespace CarDealership
 
     using CarDealership.Data;
     using CarDealership.Infrastructure;
+    using CarDealership.Services.Statistics;
+    using CarDealership.Services.Cars;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -36,6 +39,9 @@ namespace CarDealership
                 .AddEntityFrameworkStores<CarDealershipDbContext>();
 
             services.AddControllersWithViews();
+
+            services.AddTransient<IStatisticsService, StatisticsService>();
+            services.AddTransient<ICarService, CarService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

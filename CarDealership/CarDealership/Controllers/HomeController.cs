@@ -8,20 +8,21 @@
     using CarDealership.Data;
     using CarDealership.Models;
     using CarDealership.Models.Home;
+    using CarDealership.Services.Statistics;
+
     public class HomeController : Controller
     {
         private readonly CarDealershipDbContext data;
+        private readonly IStatisticsService statistics;
 
-        public HomeController(CarDealershipDbContext data)
+        public HomeController(CarDealershipDbContext data, IStatisticsService statistics)
         {
             this.data = data;
+            this.statistics = statistics;
         }
 
         public IActionResult Index()
         {
-            var totalCars = this.data.Cars.Count();
-            var totalUsers = this.data.Users.Count();
-
             var cars = this.data.Cars
                 .OrderByDescending(x=> x.Id)
                 .Select(x => new CarIndexViewModel
@@ -35,11 +36,13 @@
                 }).Take(3)
                 .ToList();
 
+            var totalStatistics = this.statistics.Total();
+
             return this.View(new IndexViewModel 
             {
                 Cars = cars,
-                TotalCars = totalCars,
-                TotalUsers = totalUsers
+                TotalCars = totalStatistics.TotalCars,
+                TotalUsers = totalStatistics.TotalUsers
             });
         }
 
