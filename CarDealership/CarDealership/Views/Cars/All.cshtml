@@ -1,7 +1,7 @@
 ﻿@model AllCarsQueryModel
 
 @{
-    ViewData["Title"] = "All Cars";
+    ViewBag.Title = "All Cars";
 }
 
 
@@ -77,21 +77,7 @@
     </div>
 </div>
 
-<div class="row">
-    @foreach (var car in Model.Cars)
-    {
-        <div class="col-md-4">
-            <div class="card mb-3" style="width: 18rem; height: 22rem;">
-                <img class="card-img-top" src="@car.ImageUrl" alt="@car.Brand @car.Model">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-center">@car.Year @car.Brand @car.Model</h5>
-                    <p class="card-text">@car.Description</p>
-                    <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-primary">Details</a>
-                </div>
-            </div>
-        </div>
-    }
-</div>
+<partial name="_CarsPartial" model="@Model.Cars" />
 
 
 

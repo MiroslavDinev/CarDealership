@@ -1,81 +1,67 @@
 ﻿namespace CarDealership.Controllers
 {
-    using System.Linq;
-    using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
 
-    using CarDealership.Data;
-    using CarDealership.Data.Models;
     using CarDealership.Models.Cars;
-    using CarDealership.Infrastructure;
     using CarDealership.Services.Cars;
+    using CarDealership.Infrastructure;
+    using CarDealership.Services.Dealers;
 
     public class CarsController : Controller
     {
-        private readonly CarDealershipDbContext data;
         private readonly ICarService carService;
+        private readonly IDealersService dealersService;
 
-        public CarsController(CarDealershipDbContext data, ICarService carService)
+        public CarsController(ICarService carService, IDealersService dealersService)
         {
-            this.data = data;
             this.carService = carService;
+            this.dealersService = dealersService;
         }
 
         [Authorize]
         public IActionResult Add()
         {
-            if (!this.IsUserDealer())
+            var userId = this.User.GetId();
+
+            if (!this.dealersService.IsDealer(userId))
             {
                 return RedirectToAction(nameof(DealersController.Create), "Dealers");
             }
 
-            return this.View(new CarAddFormModel
+            return this.View(new CarFormModel
             {
-                Categories = this.GetCarCategories()
+                Categories = this.carService.GetCarCategories()
             });
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Add(CarAddFormModel car)
+        public IActionResult Add(CarFormModel car)
         {
-            var dealerId = this.data.Dealers
-                .Where(x => x.UserId == this.User.GetId())
-                .Select(d => d.Id)
-                .FirstOrDefault();
+            var userId = this.User.GetId();
+
+            var dealerId = this.dealersService.GetUserById(userId);
 
             if (dealerId == 0)
             {
                 return RedirectToAction(nameof(DealersController.Create), "Dealers");
             }
 
-            if (!this.data.Categories.Any(x=> x.Id==car.CategoryId))
+            if (!this.carService.CategoryExists(car.CategoryId))
             {
                 this.ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist!");
             }
 
             if (!ModelState.IsValid)
             {
-                car.Categories = this.GetCarCategories();
+                car.Categories = this.carService.GetCarCategories();
 
                 return this.View(car);
             }
 
-            var carData = new Car
-            {
-                Brand = car.Brand,
-                Model = car.Model,
-                Description = car.Description,
-                ImageUrl = car.ImageUrl,
-                Year = car.Year,
-                CategoryId = car.CategoryId,
-                DealerId = dealerId
-            };
-
-            this.data.Cars.Add(carData);
-            this.data.SaveChanges();
+            this.carService.Create(car.Brand, car.Model, car.Description, car.ImageUrl, car.Year, car.CategoryId, dealerId);
 
             return RedirectToAction("Index", "Home");
             
@@ -94,21 +80,76 @@
             return this.View(query);
         }
 
-        private IEnumerable<CarCategoryViewModel> GetCarCategories()
+        [Authorize]
+        public IActionResult Mine()
         {
-            return this.data.Categories
-                .Select(c => new CarCategoryViewModel
-                {
-                    Id = c.Id,
-                    Name = c.Name
-                }).ToList();
+            var myCars = this.carService.ByUser(this.User.GetId());
+            return this.View(myCars);
         }
 
-        private bool IsUserDealer()
+        [Authorize]
+        public IActionResult Edit(int id)
         {
-            return this.data.Dealers
-                .Any(x => x.UserId == this.User.GetId());
+            var userId = this.User.GetId();
 
+            if (!this.dealersService.IsDealer(userId))
+            {
+                return RedirectToAction(nameof(DealersController.Create), "Dealers");
+            }
+
+            var car = this.carService.Details(id);
+
+            if(car.UserId != userId)
+            {
+                return Unauthorized();
+            }
+
+            return this.View(new CarFormModel
+            {
+                Brand = car.Brand,
+                Model = car.Model,
+                ImageUrl = car.ImageUrl,
+                Description = car.Description,
+                Year = car.Year,
+                CategoryId = car.CategoryId,
+                Categories = this.carService.GetCarCategories()
+            });
+        }
+
+        [HttpPost]
+        [Authorize]
+
+        public IActionResult Edit(int id, CarFormModel car)
+        {
+            var userId = this.User.GetId();
+
+            var dealerId = this.dealersService.GetUserById(userId);
+
+            if (dealerId == 0)
+            {
+                return RedirectToAction(nameof(DealersController.Create), "Dealers");
+            }
+
+            if (!this.carService.CategoryExists(car.CategoryId))
+            {
+                this.ModelState.AddModelError(nameof(car.CategoryId), "Category does not exist!");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                car.Categories = this.carService.GetCarCategories();
+
+                return this.View(car);
+            }
+
+            if (!this.carService.CarIsByDealer(id, dealerId))
+            {
+                return BadRequest();
+            }
+
+            this.carService.Edit(id, car.Brand, car.Model, car.Description, car.ImageUrl, car.Year, car.CategoryId);
+
+            return RedirectToAction(nameof(All));
         }
     }
 }

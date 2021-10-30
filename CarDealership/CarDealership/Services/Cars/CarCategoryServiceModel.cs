@@ -1,6 +1,6 @@
 ﻿namespace CarDealership.Models.Cars
 {
-    public class CarCategoryViewModel
+    public class CarCategoryServiceModel
     {
         public int Id { get; set; }
 

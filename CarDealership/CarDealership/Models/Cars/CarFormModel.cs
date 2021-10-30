@@ -5,7 +5,7 @@
     using System.ComponentModel.DataAnnotations;
 
     using static Data.DataConstants.Car;
-    public class CarAddFormModel
+    public class CarFormModel
     {
         [Required]
         [StringLength(CarBrandMaxLength, MinimumLength = CarBrandmMinLength)]
@@ -30,6 +30,6 @@
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
 
-        public IEnumerable<CarCategoryViewModel> Categories { get; set; }
+        public IEnumerable<CarCategoryServiceModel> Categories { get; set; }
     }
 }

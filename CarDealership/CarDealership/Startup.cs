@@ -1,5 +1,6 @@
 namespace CarDealership
 {
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Hosting;
@@ -12,6 +13,7 @@ namespace CarDealership
     using CarDealership.Infrastructure;
     using CarDealership.Services.Statistics;
     using CarDealership.Services.Cars;
+    using CarDealership.Services.Dealers;
 
     public class Startup
     {
@@ -38,10 +40,14 @@ namespace CarDealership
             })
                 .AddEntityFrameworkStores<CarDealershipDbContext>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options => 
+            {
+                options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
+            });
 
             services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<ICarService, CarService>();
+            services.AddTransient<IDealersService, DealersService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
