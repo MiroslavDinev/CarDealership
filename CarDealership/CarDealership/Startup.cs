@@ -10,10 +10,11 @@ namespace CarDealership
     using Microsoft.Extensions.DependencyInjection;
 
     using CarDealership.Data;
-    using CarDealership.Infrastructure;
-    using CarDealership.Services.Statistics;
+    using CarDealership.Data.Models;
     using CarDealership.Services.Cars;
     using CarDealership.Services.Dealers;
+    using CarDealership.Services.Statistics;
+    using CarDealership.Infrastructure;
 
     public class Startup
     {
@@ -31,13 +32,14 @@ namespace CarDealership
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => 
+            services.AddDefaultIdentity<User>(options => 
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<CarDealershipDbContext>();
 
             services.AddControllersWithViews(options => 

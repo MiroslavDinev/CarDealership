@@ -92,14 +92,14 @@
         {
             var userId = this.User.GetId();
 
-            if (!this.dealersService.IsDealer(userId))
+            if (!this.dealersService.IsDealer(userId) && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(DealersController.Create), "Dealers");
             }
 
             var car = this.carService.Details(id);
 
-            if(car.UserId != userId)
+            if(car.UserId != userId && !User.IsAdmin())
             {
                 return Unauthorized();
             }
@@ -118,14 +118,13 @@
 
         [HttpPost]
         [Authorize]
-
         public IActionResult Edit(int id, CarFormModel car)
         {
             var userId = this.User.GetId();
 
             var dealerId = this.dealersService.GetUserById(userId);
 
-            if (dealerId == 0)
+            if (dealerId == 0 && !User.IsAdmin())
             {
                 return RedirectToAction(nameof(DealersController.Create), "Dealers");
             }
@@ -142,7 +141,7 @@
                 return this.View(car);
             }
 
-            if (!this.carService.CarIsByDealer(id, dealerId))
+            if (!this.carService.CarIsByDealer(id, dealerId) && !User.IsAdmin())
             {
                 return BadRequest();
             }

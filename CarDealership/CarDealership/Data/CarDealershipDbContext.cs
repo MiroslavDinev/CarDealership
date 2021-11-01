@@ -1,12 +1,11 @@
 ﻿namespace CarDealership.Data
 {
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
     using CarDealership.Data.Models;
 
-    public class CarDealershipDbContext : IdentityDbContext
+    public class CarDealershipDbContext : IdentityDbContext<User>
     {
         public CarDealershipDbContext(DbContextOptions<CarDealershipDbContext> options)
             : base(options)
@@ -32,7 +31,7 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Dealer>()
-                .HasOne<IdentityUser>()
+                .HasOne<User>()
                 .WithOne()
                 .HasForeignKey<Dealer>(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict);

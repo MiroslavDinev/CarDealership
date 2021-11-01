@@ -3,8 +3,6 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    using Microsoft.AspNetCore.Identity;
-
     using static DataConstants.Dealer;
     public class Dealer
     {
@@ -24,9 +22,6 @@
 
         [Required]
         public string UserId { get; set; }
-
-        public virtual IdentityUser User { get; set; }
-
         public IEnumerable<Car> Cars { get; set; }
     }
 }
