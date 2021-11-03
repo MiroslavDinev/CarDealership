@@ -1,7 +1,10 @@
 ﻿namespace CarDealership.Services.Cars
 {
-    using System.Collections.Generic;
     using System.Linq;
+    using System.Collections.Generic;
+
+    using AutoMapper;
+    using AutoMapper.QueryableExtensions;
 
     using CarDealership.Data;
     using CarDealership.Data.Models;
@@ -10,10 +13,12 @@
     public class CarService : ICarService
     {
         private readonly CarDealershipDbContext data;
+        private readonly IMapper mapper;
 
-        public CarService(CarDealershipDbContext data)
+        public CarService(CarDealershipDbContext data, IMapper mapper)
         {
             this.data = data;
+            this.mapper = mapper;
         }
         public CarQueryServiceModel All(string brand, string searchTerm, CarSorting sorting, int currentPage, int carsPerPage)
         {
@@ -123,21 +128,8 @@
         {
             return this.data.Cars
                 .Where(c => c.Id == id)
-                .Select(x => new CarDetailsServiceModel
-                {
-                    Id = x.Id,
-                    Brand = x.Brand,
-                    Model = x.Model,
-                    ImageUrl = x.ImageUrl,
-                    Description = x.Description,
-                    Year = x.Year,
-                    Category = x.Category.Name,
-                    CategoryId = x.CategoryId,
-                    DealerId = x.DealerId,
-                    DealerName = x.Dealer.Name,
-                    UserId = x.Dealer.UserId
-
-                }).FirstOrDefault();
+                .ProjectTo<CarDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .FirstOrDefault();
         }
 
         public bool CategoryExists(int categoryId)

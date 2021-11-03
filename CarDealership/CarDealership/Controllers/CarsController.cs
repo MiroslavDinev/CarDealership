@@ -3,6 +3,7 @@
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
+    using AutoMapper;
 
     using CarDealership.Models.Cars;
     using CarDealership.Services.Cars;
@@ -13,11 +14,13 @@
     {
         private readonly ICarService carService;
         private readonly IDealersService dealersService;
+        private readonly IMapper mapper;
 
-        public CarsController(ICarService carService, IDealersService dealersService)
+        public CarsController(ICarService carService, IDealersService dealersService, IMapper mapper)
         {
             this.carService = carService;
             this.dealersService = dealersService;
+            this.mapper = mapper;
         }
 
         [Authorize]
@@ -104,16 +107,10 @@
                 return Unauthorized();
             }
 
-            return this.View(new CarFormModel
-            {
-                Brand = car.Brand,
-                Model = car.Model,
-                ImageUrl = car.ImageUrl,
-                Description = car.Description,
-                Year = car.Year,
-                CategoryId = car.CategoryId,
-                Categories = this.carService.GetCarCategories()
-            });
+            var carForm = this.mapper.Map<CarFormModel>(car);
+            carForm.Categories = this.carService.GetCarCategories();
+
+            return this.View(carForm);
         }
 
         [HttpPost]

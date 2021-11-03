@@ -42,6 +42,8 @@ namespace CarDealership
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<CarDealershipDbContext>();
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllersWithViews(options => 
             {
                 options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
@@ -77,6 +79,7 @@ namespace CarDealership
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultAreaRoute();
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });

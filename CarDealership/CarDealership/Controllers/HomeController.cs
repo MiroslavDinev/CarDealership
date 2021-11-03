@@ -4,36 +4,33 @@
     using System.Diagnostics;
 
     using Microsoft.AspNetCore.Mvc;
+    using AutoMapper;
 
     using CarDealership.Data;
     using CarDealership.Models;
     using CarDealership.Models.Home;
     using CarDealership.Services.Statistics;
+    using AutoMapper.QueryableExtensions;
 
     public class HomeController : Controller
     {
         private readonly CarDealershipDbContext data;
         private readonly IStatisticsService statistics;
+        private readonly IMapper mapper;
 
-        public HomeController(CarDealershipDbContext data, IStatisticsService statistics)
+        public HomeController(CarDealershipDbContext data, IStatisticsService statistics, IMapper mapper)
         {
             this.data = data;
             this.statistics = statistics;
+            this.mapper = mapper;
         }
 
         public IActionResult Index()
         {
             var cars = this.data.Cars
                 .OrderByDescending(x=> x.Id)
-                .Select(x => new CarIndexViewModel
-                {
-                    Id = x.Id,
-                    Brand = x.Brand,
-                    Model = x.Model,
-                    ImageUrl = x.ImageUrl,
-                    Description = x.Description,
-                    Year = x.Year
-                }).Take(3)
+                .ProjectTo<CarIndexViewModel>(this.mapper.ConfigurationProvider)
+                .Take(3)
                 .ToList();
 
             var totalStatistics = this.statistics.Total();

@@ -11,7 +11,7 @@
 
     using CarDealership.Data;
     using CarDealership.Data.Models;
-    using static WebConstants;
+    using static CarDealership.Areas.Admin.AdminConstants;
 
     public static class ApplicationBuilderExtensions
     {
