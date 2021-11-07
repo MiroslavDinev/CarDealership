@@ -9,6 +9,7 @@
         CarQueryServiceModel All(string brand, string searchTerm, CarSorting sorting, int currentPage, int carsPerPage);
 
         IEnumerable<string> AllCarBrands();
+        IEnumerable<LatestCarServiceModel> Latest();
 
         IEnumerable<CarServiceModel> ByUser(string userId);
 

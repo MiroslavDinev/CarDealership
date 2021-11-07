@@ -13,12 +13,12 @@
     public class CarService : ICarService
     {
         private readonly CarDealershipDbContext data;
-        private readonly IMapper mapper;
+        private readonly IConfigurationProvider mapper;
 
         public CarService(CarDealershipDbContext data, IMapper mapper)
         {
             this.data = data;
-            this.mapper = mapper;
+            this.mapper = mapper.ConfigurationProvider;
         }
         public CarQueryServiceModel All(string brand, string searchTerm, CarSorting sorting, int currentPage, int carsPerPage)
         {
@@ -128,7 +128,7 @@
         {
             return this.data.Cars
                 .Where(c => c.Id == id)
-                .ProjectTo<CarDetailsServiceModel>(this.mapper.ConfigurationProvider)
+                .ProjectTo<CarDetailsServiceModel>(this.mapper)
                 .FirstOrDefault();
         }
 
@@ -141,6 +141,15 @@
         {
             return this.data.Cars
                 .Any(x => x.Id == carId && x.DealerId == dealerId);
+        }
+
+        public IEnumerable<LatestCarServiceModel> Latest()
+        {
+            return this.data.Cars
+                .OrderByDescending(x => x.Id)
+                .ProjectTo<LatestCarServiceModel>(this.mapper)
+                .Take(3)
+                .ToList();
         }
 
         private static IEnumerable<CarServiceModel> GetCars(IQueryable<Car> carsQuery)

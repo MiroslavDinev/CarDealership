@@ -8,24 +8,18 @@
     [Route("api/statistics")]
     public class StatisticsApiController : ControllerBase
     {
-        private readonly IStatisticsService statistics;
+        private readonly IStatisticsService statisticsService;
 
         public StatisticsApiController(IStatisticsService statistics)
         {
-            this.statistics = statistics;
+            this.statisticsService = statistics;
         }
 
         [HttpGet]
         public StatisticsServiceModel GetStatistics()
         {
-            var totalStatistics = this.statistics.Total();
-
-            return new StatisticsServiceModel
-            {
-                TotalCars = totalStatistics.TotalCars,
-                TotalUsers = totalStatistics.TotalUsers,
-                TotalRents = 0
-            };
+            var totalStatistics = this.statisticsService.Total();
+            return totalStatistics;
         }
     }
 }
