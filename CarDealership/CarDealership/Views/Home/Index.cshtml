@@ -1,16 +1,16 @@
-﻿@model IndexViewModel
+﻿@model List<LatestCarServiceModel>
 
 @{
     ViewBag.Title = "Welcome";
 }
 
 @{
-    var firstCar = Model.Cars.Any() ? Model.Cars[0] : null;
-    var secondCar = Model.Cars.Count() > 1 ? Model.Cars[1] : null;
-    var thirdCar = Model.Cars.Count() > 2 ? Model.Cars[2] : null;
+    var firstCar = Model.Any() ? Model[0] : null;
+    var secondCar = Model.Count() > 1 ? Model[1] : null;
+    var thirdCar = Model.Count() > 2 ? Model[2] : null;
 }
 
-@if (!Model.Cars.Any())
+@if (!Model.Any())
 {
     <div class="jumbotron">
         <h1 class="display-4">Welcome to car renting system!</h1>

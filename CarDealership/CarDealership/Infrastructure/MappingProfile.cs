@@ -3,7 +3,6 @@
     using AutoMapper;
     using CarDealership.Data.Models;
     using CarDealership.Models.Cars;
-    using CarDealership.Models.Home;
     using CarDealership.Services.Cars;
 
     public class MappingProfile : Profile

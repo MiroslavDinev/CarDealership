@@ -9,6 +9,7 @@
     using CarDealership.Data.Models;
     using CarDealership.Infrastructure;
     using CarDealership.Models.Dealers;
+    using static WebConstants;
     
     public class DealersController : Controller
     {
@@ -52,6 +53,8 @@
 
             this.data.Dealers.Add(dealerData);
             this.data.SaveChanges();
+
+            this.TempData[GlobalMessageKey] = "Thank you for becomming a dealer!";
 
             return this.RedirectToAction("All", "Cars");
         }

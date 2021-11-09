@@ -9,6 +9,7 @@
     using CarDealership.Services.Cars;
     using CarDealership.Infrastructure;
     using CarDealership.Services.Dealers;
+    using static WebConstants;
 
     public class CarsController : Controller
     {
@@ -66,8 +67,9 @@
 
             this.carService.Create(car.Brand, car.Model, car.Description, car.ImageUrl, car.Year, car.CategoryId, dealerId);
 
-            return RedirectToAction("Index", "Home");
-            
+            this.TempData[GlobalMessageKey] = "Car successfully added!";
+
+            return RedirectToAction("Index", "Home");            
         }
 
         public IActionResult All([FromQuery]AllCarsQueryModel query)

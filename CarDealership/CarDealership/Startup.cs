@@ -43,6 +43,8 @@ namespace CarDealership
                 .AddEntityFrameworkStores<CarDealershipDbContext>();
 
             services.AddAutoMapper(typeof(Startup));
+            services.AddMemoryCache();
+            services.AddSession();
 
             services.AddControllersWithViews(options => 
             {
@@ -76,6 +78,7 @@ namespace CarDealership
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
