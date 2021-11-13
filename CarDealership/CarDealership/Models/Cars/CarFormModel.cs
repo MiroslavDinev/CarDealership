@@ -4,8 +4,10 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using CarDealership.Services.Cars;
+
     using static Data.DataConstants.Car;
-    public class CarFormModel
+    public class CarFormModel : ICarModel
     {
         [Required]
         [StringLength(CarBrandMaxLength, MinimumLength = CarBrandmMinLength)]

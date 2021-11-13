@@ -1,7 +1,8 @@
 ﻿namespace CarDealership.Services.Dealers
 {
-    using CarDealership.Data;
     using System.Linq;
+
+    using CarDealership.Data;
 
     public class DealersService : IDealersService
     {

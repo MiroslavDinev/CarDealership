@@ -14,7 +14,10 @@
         }
         public StatisticsServiceModel Total()
         {
-            var totalCars = this.data.Cars.Count();
+            var totalCars = this.data.Cars
+                .Where(c=> c.IsPublic)
+                .Count();
+
             var totalUsers = this.data.Users.Count();
 
             return new StatisticsServiceModel

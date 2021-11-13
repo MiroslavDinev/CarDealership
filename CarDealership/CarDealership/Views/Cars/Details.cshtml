@@ -1,0 +1,22 @@
+﻿@model CarDetailsServiceModel
+
+@{
+    ViewBag.Title = "Car Details";
+}
+
+
+<div class="h-100 row align-items-center">
+    <img class="card-img-top" src="@Model.ImageUrl" alt="@Model.Brand @Model.Model">
+    <div class="card-body text-center">
+        <h5 class="card-title text-center">@Model.Year @Model.Brand @Model.Model</h5>
+        <p class="card-text">@Model.Description</p>
+        <p class="card-text">@Model.CategoryName</p>
+        <p class="card-text">@Model.DealerName</p>
+        @if (User.IsAdmin())
+        {
+            <a asp-controller="Cars" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+            <a asp-controller="Cars" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+        }
+    </div>
+</div>
+

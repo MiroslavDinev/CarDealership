@@ -6,7 +6,12 @@
 
     public interface ICarService
     {
-        CarQueryServiceModel All(string brand, string searchTerm, CarSorting sorting, int currentPage, int carsPerPage);
+        CarQueryServiceModel All(string brand = null, 
+            string searchTerm = null, 
+            CarSorting sorting = CarSorting.DateCreated, 
+            int currentPage = 1,
+            int carsPerPage = int.MaxValue,
+            bool publicOnly = true);
 
         IEnumerable<string> AllCarBrands();
         IEnumerable<LatestCarServiceModel> Latest();
@@ -19,8 +24,10 @@
 
         bool CategoryExists(int categoryId);
 
+        void ChangeVisibility(int carId);
+
         int Create(string brand, string model, string description, string imageUrl, int year, int categoryId, int dealerId);
-        bool Edit(int carId, string brand, string model, string description, string imageUrl, int year, int categoryId);
+        bool Edit(int carId, string brand, string model, string description, string imageUrl, int year, int categoryId, bool isPublic);
 
         bool CarIsByDealer(int carId, int dealerId);
     }

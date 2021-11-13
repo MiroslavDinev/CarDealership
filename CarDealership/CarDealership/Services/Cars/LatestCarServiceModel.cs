@@ -1,6 +1,6 @@
 ﻿namespace CarDealership.Services.Cars
 {
-    public class LatestCarServiceModel
+    public class LatestCarServiceModel : ICarModel
     {
         public int Id { get; set; }
         public string Brand { get; set; }

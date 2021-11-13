@@ -65,11 +65,12 @@
                 return this.View(car);
             }
 
-            this.carService.Create(car.Brand, car.Model, car.Description, car.ImageUrl, car.Year, car.CategoryId, dealerId);
+            var carId = this.carService
+                .Create(car.Brand, car.Model, car.Description, car.ImageUrl, car.Year, car.CategoryId, dealerId);
 
-            this.TempData[GlobalMessageKey] = "Car successfully added!";
+            this.TempData[GlobalMessageKey] = "Car successfully added and awaiting approval!";
 
-            return RedirectToAction("Index", "Home");            
+            return RedirectToAction(nameof(Details), new { id= carId, information = car.GetInformation()});            
         }
 
         public IActionResult All([FromQuery]AllCarsQueryModel query)
@@ -145,9 +146,23 @@
                 return BadRequest();
             }
 
-            this.carService.Edit(id, car.Brand, car.Model, car.Description, car.ImageUrl, car.Year, car.CategoryId);
+            this.carService.Edit(id, car.Brand, car.Model, car.Description, car.ImageUrl, car.Year, car.CategoryId, this.User.IsAdmin());
 
-            return RedirectToAction(nameof(All));
+            this.TempData[GlobalMessageKey] = $"Car successfully edited{(this.User.IsAdmin() ? string.Empty : "and awaiting approval")} !";
+
+            return RedirectToAction(nameof(Details), new { id = id, information = car.GetInformation() });
+        }
+
+        public IActionResult Details(int id, string information)
+        {
+            var car = this.carService.Details(id);
+
+            if(information != car.GetInformation())
+            {
+                return BadRequest();
+            }
+
+            return View(car);
         }
     }
 }
