@@ -9,6 +9,8 @@
 
     using CarDealership.Services.Cars;
 
+    using static WebConstants.Cache;
+
     public class HomeController : Controller
     {
         private readonly ICarService carService;
@@ -22,9 +24,7 @@
 
         public IActionResult Index()
         {
-            const string latestCarsCacheKey = "LatestCarsCacheKey";
-
-            var latestCars = this.cache.Get<List<LatestCarServiceModel>>(latestCarsCacheKey);
+            var latestCars = this.cache.Get<List<LatestCarServiceModel>>(LatestCarsCacheKey);
 
             if(latestCars == null)
             {
@@ -33,7 +33,7 @@
                 var cacheOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromMinutes(15));
 
-                this.cache.Set(latestCarsCacheKey, latestCars, cacheOptions);
+                this.cache.Set(LatestCarsCacheKey, latestCars, cacheOptions);
             }
 
             return this.View(latestCars);
