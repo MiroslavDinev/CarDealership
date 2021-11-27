@@ -14,6 +14,7 @@
             bool publicOnly = true);
 
         IEnumerable<string> AllCarBrands();
+
         IEnumerable<LatestCarServiceModel> Latest();
 
         IEnumerable<CarServiceModel> ByUser(string userId);
@@ -25,6 +26,7 @@
         bool CategoryExists(int categoryId);
 
         void ChangeVisibility(int carId);
+        bool Delete(int carId);
 
         int Create(string brand, string model, string description, string imageUrl, int year, int categoryId, int dealerId);
         bool Edit(int carId, string brand, string model, string description, string imageUrl, int year, int categoryId, bool isPublic);

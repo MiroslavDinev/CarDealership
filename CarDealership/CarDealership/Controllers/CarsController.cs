@@ -164,5 +164,18 @@
 
             return View(car);
         }
+
+        [Authorize]
+        public IActionResult Delete(int id)
+        {
+            var isDeleted = this.carService.Delete(id);
+
+            if (!isDeleted)
+            {
+                return BadRequest();
+            }
+
+            return RedirectToAction(nameof(All));
+        }
     }
 }

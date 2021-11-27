@@ -138,6 +138,21 @@
                 .FirstOrDefault();
         }
 
+        public bool Delete(int carId)
+        {
+            var car = this.data.Cars.Find(carId);
+
+            if(car == null)
+            {
+                return false;
+            }
+
+            this.data.Cars.Remove(car);
+            this.data.SaveChanges();
+
+            return true;
+        }
+
         public bool CategoryExists(int categoryId)
         {
             return this.data.Categories.Any(x => x.Id == categoryId);
